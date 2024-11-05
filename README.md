@@ -1,16 +1,15 @@
-# 19-bit CPU Architecture in VHDL
+# 19-bit CPU in VHDL
 
-This project implements a custom 19-bit CPU in VHDL, designed for special-purpose operations such as signal processing and cryptography. The CPU is equipped with dedicated instructions for FFT, encryption, and decryption, and features a simple 5-stage pipeline architecture.
+This repository contains the implementation of a custom 19-bit CPU in VHDL. Designed specifically for signal processing and cryptography, this CPU includes unique features like specialized encryption and decryption instructions, a 5-stage pipeline architecture, and a 19-bit instruction/data width. 
 
 ## Features
 
-- **19-bit instruction size** and **19-bit data width**
-- **16 general-purpose registers** (19 bits each)
-- **Specialized instructions** for FFT, encryption, and decryption
-- Support for **arithmetic, logical, control flow, and memory access instructions**
-- **Simple pipeline** with five stages: Fetch, Decode, Execute, Memory Access, and Write-back
-- **Harvard architecture** with separate instruction and data memory
-- **Memory size**: 2^19 (524,288) addresses, each storing 19-bit data
+- **19-bit Instruction and Data Width**
+- **16 General-Purpose Registers** (19-bit wide each)
+- **Specialized Instructions** for FFT, encryption, and decryption
+- **5-Stage Pipeline**: Fetch, Decode, Execute, Memory Access, Write-back
+- **Harvard Architecture**: Separate instruction and data memory
+- **Memory Size**: 524,288 addresses (2^19), with each storing 19-bit data
 
 ## Architecture Overview
 
@@ -18,33 +17,33 @@ This project implements a custom 19-bit CPU in VHDL, designed for special-purpos
 - 16 general-purpose registers (`gp_reg[0:15]`), each 19 bits wide.
 
 ### Memory Interface
-- Memory size of 524,288 addresses (2^19), each capable of holding a 19-bit word.
-- Separate instruction and data memory (Harvard architecture).
+- 524,288 addressable memory locations, with each address holding 19 bits of data.
+- Separate instruction and data memory.
 
 ### ALU (Arithmetic Logic Unit)
-- Supports basic arithmetic operations: ADD, SUB, MUL, DIV, INC, and DEC.
-- Supports logical operations: AND, OR, XOR, and NOT.
+- Supports arithmetic operations: ADD, SUB, MUL, DIV, INC, and DEC.
+- Supports logical operations: AND, OR, XOR, NOT, NAND, and NOR.
 
 ### Specialized Operations
-- **FFT**: Fast Fourier Transform for signal processing.
-- **ENC**: Encryption using a predefined algorithm.
-- **DEC**: Decryption using a predefined algorithm.
+- **ENC**: Encryption using a simple XOR-based method.
+- **DEC**: Decryption using the same XOR-based method.
 
 ## Pipeline Stages
 
 1. **Fetch**: Retrieve the instruction from memory using the program counter (PC).
-2. **Decode**: Decode the instruction to identify the opcode and operands.
+2. **Decode**: Decode the instruction to determine the opcode and operands.
 3. **Execute**: Perform the operation specified by the opcode.
-4. **Memory Access**: Access memory if the instruction is a load or store.
-5. **Write-back**: Store the result back into the destination register.
+4. **Memory Access**: Access memory for load or store operations.
+5. **Write-back**: Write results to the destination register.
 
 ## Instruction Set Architecture
 
-With a 19-bit instruction size, the instruction fields are defined as follows:
+The 19-bit instruction format is defined as follows:
 - **Opcode**: `inst(18 downto 14)` (5 bits)
 - **Register r1**: `inst(13 downto 10)` (4 bits)
 - **Register r2**: `inst(9 downto 6)` (4 bits)
 - **Register r3**: `inst(5 downto 2)` (4 bits)
+- **Immediate Value**: `inst(18 downto 0)` (entire instruction)
 
 ### Instruction Opcodes
 
@@ -52,50 +51,52 @@ With a 19-bit instruction size, the instruction fields are defined as follows:
 
 | Opcode | Description                             | Operation              |
 |--------|-----------------------------------------|------------------------|
-| 00000  | Add values of `r2` and `r3`, store in `r1` | `r1 = r2 + r3`         |
-| 00001  | Subtract `r3` from `r2`, store in `r1`     | `r1 = r2 - r3`         |
-| 00010  | Multiply values of `r2` and `r3`, store in `r1` | `r1 = r2 * r3`  |
-| 00011  | Divide `r2` by `r3`, store in `r1`        | `r1 = r2 / r3`         |
-| 01000  | Increment value in `r1`                   | `r1 = r1 + 1`          |
-| 01001  | Decrement value in `r1`                   | `r1 = r1 - 1`          |
+| 00000  | Add `r2` and `r3`, store in `r1`        | `r1 = r2 + r3`         |
+| 00001  | Subtract `r3` from `r2`, store in `r1`  | `r1 = r2 - r3`         |
+| 00010  | Multiply `r2` and `r3`, store in `r1`   | `r1 = r2 * r3`         |
+| 00011  | Divide `r2` by `r3`, store in `r1`      | `r1 = r2 / r3`         |
+| 01010  | Increment `r1`                          | `r1 = r1 + 1`          |
+| 01011  | Decrement `r1`                          | `r1 = r1 - 1`          |
 
 #### Logical Operations
 
 | Opcode | Description                             | Operation              |
 |--------|-----------------------------------------|------------------------|
-| 00100  | Bitwise AND between `r2` and `r3`, store in `r1` | `r1 = r2 AND r3` |
-| 00101  | Bitwise OR between `r2` and `r3`, store in `r1` | `r1 = r2 OR r3`  |
-| 00110  | Bitwise XOR between `r2` and `r3`, store in `r1` | `r1 = r2 XOR r3` |
-| 00111  | Bitwise NOT on `r1`                      | `r1 = ~r1`             |
+| 00100  | Bitwise AND `r2` and `r3`, store in `r1` | `r1 = r2 AND r3`      |
+| 00101  | Bitwise OR `r2` and `r3`, store in `r1`  | `r1 = r2 OR r3`       |
+| 00110  | Bitwise XOR `r2` and `r3`, store in `r1` | `r1 = r2 XOR r3`      |
+| 00111  | Bitwise NAND `r2` and `r3`, store in `r1` | `r1 = r2 NAND r3`    |
+| 01000  | Bitwise NOR `r2` and `r3`, store in `r1`  | `r1 = r2 NOR r3`     |
+| 01001  | Bitwise NOT on `r1`                      | `r1 = NOT r1`         |
 
 #### Control Flow
 
 | Opcode | Description                             | Operation              |
 |--------|-----------------------------------------|------------------------|
-| 01101  | Call subroutine at the specified address | `stack[SP] = PC + 1; SP = SP - 1; PC = addr` |
-| 01111  | Return from subroutine                  | `SP = SP + 1; PC = stack[SP]` |
+| 01100  | Unconditional jump to address `immediate` | `PC = immediate`    |
+| 01101  | Conditional jump if `r1 = r2`            | `if r1 = r2 then PC = immediate` |
+| 01110  | Conditional jump if `r1 ≠ r2`            | `if r1 ≠ r2 then PC = immediate` |
+
+#### Subroutine Call and Return
+
+| Opcode | Description                             | Operation              |
+|--------|-----------------------------------------|------------------------|
+| 01111  | Call subroutine at `immediate`           | `stack[SP] = PC + 1; SP = SP - 1; PC = immediate` |
+| 10000  | Return from subroutine                   | `SP = SP + 1; PC = stack[SP]` |
 
 #### Memory Access Operations
 
 | Opcode | Description                             | Operation              |
 |--------|-----------------------------------------|------------------------|
-| 10000  | Load value from memory address into `r1` | `r1 = mem[address]`   |
-| 10001  | Store value in `r1` to memory address    | `mem[address] = r1`   |
+| 10001  | Load value from `immediate` into `r1`   | `r1 = mem[immediate]`  |
+| 10010  | Store value in `r1` to address `immediate` | `mem[immediate] = r1` |
 
 #### Specialized Operations
 
 | Opcode | Description                             | Operation              |
 |--------|-----------------------------------------|------------------------|
-| 10010  | Perform FFT on data at address `r1`, store result at `r2` | `FFT(r1) => r2` |
-| 10011  | Encrypt data at address `r1`, store result at `r2` | `ENC(r1) => r2` |
-| 10100  | Decrypt data at address `r1`, store result at `r2` | `DEC(r1) => r2` |
-
-## Getting Started
-
-### Prerequisites
-
-- **VHDL Simulator**: This project requires a VHDL-compatible simulator like ModelSim, GHDL, or Vivado for testing and verification.
-- **Hardware Synthesis Tools**: If you plan to synthesize this CPU for FPGA, you’ll need a tool like Xilinx Vivado or Intel Quartus.
+| 10011  | Encrypt data at `r1` using XOR with a key, store at `r2` | `ENC(r1) => r2` |
+| 10100  | Decrypt data at `r1` using XOR with a key, store at `r2` | `DEC(r1) => r2` |
 
 ### Running the Simulation
 
