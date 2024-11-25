@@ -1,6 +1,6 @@
 # 19-bit CPU in VHDL
 
-This repository contains the implementation of a custom 19-bit CPU in VHDL. Designed specifically for signal processing and cryptography, this CPU includes unique features like specialized encryption and decryption instructions, a 5-stage pipeline architecture, and a 19-bit instruction/data width. 
+This project is an implementation of a custom 19-bit CPU in VHDL. Designed specifically for signal processing and cryptography, this CPU includes unique features like specialized encryption and decryption instructions, a 5-stage pipeline architecture, and a 19-bit instruction/data width. 
 
 ## Features
 
