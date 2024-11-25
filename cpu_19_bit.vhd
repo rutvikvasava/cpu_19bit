@@ -54,14 +54,6 @@ for i in 0 to 7 loop
  mem_sig(test+i)<=mem_sig(src+i) xor key;
 end loop;
 end procedure;
---fft
-procedure fft(test:in integer;src:in integer) is
-begin
-for i in 0 to 7 loop
-	mem_sig(test+i)<=std_logic_vector(unsigned(mem_sig(src+i))+1);
-end loop;
-end procedure;
-
 
 begin
 if rst='1' then
@@ -115,7 +107,6 @@ end if;
 	-- special op
 		when "10011"=>enc(to_integer(unsigned(r1)),to_integer(unsigned(r2)));
 		when "10100"=>dec(to_integer(unsigned(r1)),to_integer(unsigned(r2)));
-		when "10101"=>fft(to_integer(unsigned(r1)),to_integer(unsigned(r2)));
 	when others=> null;
 end case;
 	pc<=std_logic_vector(unsigned(pc) +1);
